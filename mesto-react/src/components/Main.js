@@ -3,32 +3,40 @@ import change_profile from "../images/change_profile.svg";
 import api from "../utils/api";
 import Card from "./Card";
 
-function Main(props) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
     const [userName, setUserName] = React.useState("Loading...");
     const [userDescription, setUserDescription] = React.useState("Loading...");
     const [userAvatar, setUserAvatar] = React.useState("#");
     const [cards, setCards] = React.useState([]);
 
     React.useEffect(() => {
-        api.getInitialUserInfo().then((res) => {
-            setUserName(res.name);
-            setUserDescription(res.about);
-            setUserAvatar(res.avatar);
-        });
+        api.getInitialUserInfo()
+            .then((res) => {
+                setUserName(res.name);
+                setUserDescription(res.about);
+                setUserAvatar(res.avatar);
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }, []);
 
     React.useEffect(() => {
-        api.getInitialCards().then((res) => {
-            setCards(
-                res.map((item) => (
-                    <Card
-                        key={item._id}
-                        card={item}
-                        onCardClick={props.onCardClick}
-                    />
-                ))
-            );
-        });
+        api.getInitialCards()
+            .then((res) => {
+                setCards(res);
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }, []);
 
     return (
@@ -38,7 +46,7 @@ function Main(props) {
                     src={userAvatar}
                     alt="аватар пользователя"
                     className="profile__avatar"
-                    onClick={props.onEditAvatar}
+                    onClick={onEditAvatar}
                 />
                 <img
                     src={change_profile}
@@ -51,19 +59,30 @@ function Main(props) {
                         type="button"
                         className="profile__edit-profile-button page__hover page__hover_shade_dark"
                         aria-label
-                        onClick={props.onEditProfile}
+                        onClick={onEditProfile}
                     ></button>
                     <p className="profile__vocation">{userDescription}</p>
                 </div>
                 <button
                     type="button"
                     className="profile__edit-gallery-button page__hover page__hover_shade_dark"
-                    onClick={props.onAddPlace}
+                    onClick={onAddPlace}
                 ></button>
             </section>
 
             <section className="gallery">
-                <ul className="gallery__list">{cards}</ul>
+                <ul className="gallery__list">
+                    {cards
+                        ? cards.map((item) => (
+                              <Card
+                                  key={item._id}
+                                  card={item}
+                                  onCardClick={onCardClick}
+                              />
+                          ))
+                        : null}
+                </ul>
+                res.
             </section>
         </main>
     );
