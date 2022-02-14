@@ -12,7 +12,7 @@ class Api {
     this._serverErrors = serverErrors;
   }
 
-  _errorHandler(errorStatus) {
+  errorHandler(errorStatus) {
     if (Object.keys(this._serverErrors).includes(String(errorStatus))) {
       return this._serverErrors[errorStatus];
     }
@@ -33,9 +33,6 @@ class Api {
         return res
       }
       return Promise.reject(res);
-    })
-    .catch(res => {
-      console.log(`${this._errorHandler(res.status)} Номер ошибки - ${ (res.status) ? res.status : "неизвестен"}. Всего хорошего!`);
     })
   }
 

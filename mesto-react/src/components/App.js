@@ -9,7 +9,7 @@ function App() {
     const [isEditProfilePopupOpen, setProfileOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setPlaceOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setAvatarOpen] = React.useState(false);
-    const [selectedCard, setCardOpen] = React.useState(null);
+    const [selectedCard, setSelectedCard] = React.useState(null);
 
     function handleEditProfileClick() {
         setProfileOpen(!isEditProfilePopupOpen);
@@ -24,7 +24,7 @@ function App() {
     }
 
     function handleCardClick(card) {
-        setCardOpen(card);
+        setSelectedCard(card);
     }
 
     /* Не понял зачем по заданию реализовывать новый обработчик, если можно в props onClose каждого попапа записать соответствующую функцию handle____
@@ -33,7 +33,7 @@ function App() {
         setProfileOpen(false);
         setPlaceOpen(false);
         setAvatarOpen(false);
-        setCardOpen(null);
+        setSelectedCard(null);
     }
 
     return (
@@ -52,6 +52,7 @@ function App() {
                 title="Редактировать профиль"
                 isOpen={isEditProfilePopupOpen}
                 onClose={closeAllPopups}
+                buttonText="Сохранить"
             >
                 <div className="popup__input-with-error">
                     <input
@@ -60,8 +61,8 @@ function App() {
                         className="popup__text popup__text_parameter_name"
                         name="name"
                         placeholder="Ваше имя"
-                        minlength="2"
-                        maxlength="40"
+                        minLength="2"
+                        maxLength="40"
                         required
                     />
                     <span className="popup__error-text form-name-error"></span>
@@ -73,8 +74,8 @@ function App() {
                         className="popup__text popup__text_parameter_vocation"
                         name="vocation"
                         placeholder="Род деятельности"
-                        minlength="2"
-                        maxlength="200"
+                        minLength="2"
+                        maxLength="200"
                         required
                     />
                     <span className="popup__error-text form-vocation-error"></span>
@@ -86,30 +87,31 @@ function App() {
                 title="Новое место"
                 isOpen={isAddPlacePopupOpen}
                 onClose={closeAllPopups}
+                buttonText="Добавить"
             >
-                <div class="popup__input-with-error">
+                <div className="popup__input-with-error">
                     <input
                         id="form-figcaption"
                         type="text"
-                        class="popup__text popup__text_parameter_figcaption"
+                        className="popup__text popup__text_parameter_figcaption"
                         name="name"
                         placeholder="Название"
-                        minlength="2"
-                        maxlength="30"
+                        minLength="2"
+                        maxLength="30"
                         required
                     />
-                    <span class="popup__error-text form-figcaption-error"></span>
+                    <span className="popup__error-text form-figcaption-error"></span>
                 </div>
-                <div class="popup__input-with-error">
+                <div className="popup__input-with-error">
                     <input
                         id="form-photo-link"
                         type="url"
-                        class="popup__text popup__text_parameter_photo-link"
+                        className="popup__text popup__text_parameter_photo-link"
                         name="link"
                         placeholder="Ссылка на картинку"
                         required
                     />
-                    <span class="popup__error-text form-photo-link-error"></span>
+                    <span className="popup__error-text form-photo-link-error"></span>
                 </div>
             </PopupWithForm>
 
@@ -117,23 +119,25 @@ function App() {
                 name="are-you-sure"
                 title="Вы уверены?"
                 isOpen={false}
+                buttonText="Абсолютли!"
             />
             <PopupWithForm
                 name="avatar"
                 title="Обновить аватар"
                 isOpen={isEditAvatarPopupOpen}
                 onClose={closeAllPopups}
+                buttonText="Обновить"
             >
-                <div class="popup__input-with-error">
+                <div className="popup__input-with-error">
                     <input
                         id="form-avatar"
                         type="url"
-                        class="popup__text popup__text_parameter_avatar"
+                        className="popup__text popup__text_parameter_avatar"
                         name="avatar"
                         placeholder="Ссылка на аватар"
                         required
                     />
-                    <span class="popup__error-text form-avatar-error"></span>
+                    <span className="popup__error-text form-avatar-error"></span>
                 </div>
             </PopupWithForm>
             <ImagePopup card={selectedCard} onClose={closeAllPopups} />
