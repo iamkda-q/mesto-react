@@ -1,67 +1,68 @@
 const serverErrors = {
-  401: "Извините, но по какой-то причине вам отказано в доступе.",
-  403: "Извините, но по какой-то причине вам отказано в доступе.",
-  404: "Запрашиваемый вами ресурс отсутствует.",
-  500: "Внутренняя ошибка сервера.",
+    401: "Извините, но по какой-то причине вам отказано в доступе.",
+    403: "Извините, но по какой-то причине вам отказано в доступе.",
+    404: "Запрашиваемый вами ресурс отсутствует.",
+    500: "Внутренняя ошибка сервера.",
 };
 
 class Api {
-  constructor(options, serverErrors) {
-    this._baseUrl = options.baseUrl;
-    this._headers = options.headers;
-    this._serverErrors = serverErrors;
-  }
-
-  _errorHandler(errorStatus) {
-    if (Object.keys(this._serverErrors).includes(String(errorStatus))) {
-      return this._serverErrors[errorStatus];
+    constructor(options, serverErrors) {
+        this._baseUrl = options.baseUrl;
+        this._headers = options.headers;
+        this._serverErrors = serverErrors;
     }
-    return ("Ошибка.");
-  }
 
-  _fetch(cont, method = "GET", body = undefined) {
-    return fetch(`${this._baseUrl}${cont}`, {
-      headers: this._headers,
-      method: method,
-      body: JSON.stringify(body)
-    })
-    .then(res => {
-      if (res.ok) {
-        if (method === "GET") {
-          return res.json()
+    errorHandler(errorStatus) {
+        if (Object.keys(this._serverErrors).includes(String(errorStatus))) {
+            return this._serverErrors[errorStatus];
         }
-        return res
-      }
-      return Promise.reject(res);
-    })
-    .catch(res => {
-      console.log(`${this._errorHandler(res.status)} Номер ошибки - ${ (res.status) ? res.status : "неизвестен"}. Всего хорошего!`);
-    })
-  }
+        return "Ошибка.";
+    }
 
-  getInitialCards() {
-    return this._fetch("cards")
-  }
+    _fetch(cont, method = "GET", body = undefined) {
+        return fetch(`${this._baseUrl}${cont}`, {
+            headers: this._headers,
+            method: method,
+            body: JSON.stringify(body),
+        }).then((res) => {
+            if (res.ok) {
+                /*         if (method === "GET") {
+          return res.json()
+        } */
+                return res.json();
+            }
+            return Promise.reject(res);
+        });
+    }
 
-  getInitialUserInfo() {
-    return this._fetch("users/me")
-  }
+    getInitialCards() {
+        return this._fetch("cards");
+    }
 
-  setUserInfo(body) {
-    return this._fetch("users/me", "PATCH", body)
-  }
+    getInitialUserInfo() {
+        return this._fetch("users/me");
+    }
 
-  setNewCard(body) {
-    return this._fetch("cards", "POST", body)
-  }
+    setUserInfo(body) {
+        return this._fetch("users/me", "PATCH", body);
+    }
 
-  deleteCard(cardID) {
-    return (
-      this._fetch(`cards/${cardID}`, "DELETE")
-    )
-  }
+    setNewCard(body) {
+        return this._fetch("cards", "POST", body);
+    }
 
-  setLike(cardID) {
+    deleteCard(cardID) {
+        return this._fetch(`cards/${cardID}`, "DELETE");
+    }
+
+    changeLike(cardID, isLiked) {
+        if (isLiked) {
+            return this._fetch(`cards/${cardID}/likes`, "DELETE");
+        }
+        return this._fetch(`cards/${cardID}/likes`, "PUT");
+    }
+
+    /*   setLike(cardID) {
     return (
       this._fetch(`cards/${cardID}/likes`, "PUT")
     )
@@ -71,22 +72,22 @@ class Api {
     return (
       this._fetch(`cards/${cardID}/likes`, "DELETE")
     )
-  }
+  } */
 
-  updateAvatar(body) {
-    return (
-      this._fetch(`users/me/avatar`, "PATCH", body)
-    )
-  }
+    updateAvatar(body) {
+        return this._fetch(`users/me/avatar`, "PATCH", body);
+    }
 }
 
-const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-34/',
-  headers: {
-    authorization: 'be33cdb8-be40-4c20-b8a9-d95898749c16',
-    'Content-Type': 'application/json'
-  }
-}, serverErrors);
+const api = new Api(
+    {
+        baseUrl: "https://mesto.nomoreparties.co/v1/cohort-34/",
+        headers: {
+            authorization: "be33cdb8-be40-4c20-b8a9-d95898749c16",
+            "Content-Type": "application/json",
+        },
+    },
+    serverErrors
+);
 
 export default api;
-

@@ -2,43 +2,54 @@ import React from "react";
 import change_profile from "../images/change_profile.svg";
 import api from "../utils/api";
 import Card from "./Card";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
-function Main(props) {
-    const [userName, setUserName] = React.useState("Loading...");
-    const [userDescription, setUserDescription] = React.useState("Loading...");
-    const [userAvatar, setUserAvatar] = React.useState("#");
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
+    const currentUser = React.useContext(CurrentUserContext);
     const [cards, setCards] = React.useState([]);
 
     React.useEffect(() => {
-        api.getInitialUserInfo().then((res) => {
-            setUserName(res.name);
-            setUserDescription(res.about);
-            setUserAvatar(res.avatar);
-        });
+        api.getInitialCards()
+            .then((res) => {
+                setCards(res);
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }, []);
 
-    React.useEffect(() => {
-        api.getInitialCards().then((res) => {
+    function handleCardLike(card) {
+        const isLiked = card.likes.some((like) => like._id === currentUser._id);
+        api.changeLike(card._id, isLiked).then((newCard) => {
             setCards(
-                res.map((item) => (
-                    <Card
-                        key={item._id}
-                        card={item}
-                        onCardClick={props.onCardClick}
-                    />
-                ))
+                cards.map((item) => {
+                    if (newCard._id === item._id) {
+                        return newCard;
+                    }
+                    return item;
+                })
             );
         });
-    }, []);
+    }
+
+    function handleCardDelete(card) {
+        api.deleteCard(card._id).then(() => {
+            setCards(cards.filter(item => item._id !== card._id))
+        })
+    }
 
     return (
         <main className="main">
             <section className="profile">
                 <img
-                    src={userAvatar}
+                    src={currentUser.avatar}
                     alt="аватар пользователя"
                     className="profile__avatar"
-                    onClick={props.onEditAvatar}
+                    onClick={onEditAvatar}
                 />
                 <img
                     src={change_profile}
@@ -46,24 +57,37 @@ function Main(props) {
                     className="profile__change-avatar"
                 />
                 <div className="profile__info">
-                    <h1 className="profile__name">{userName}</h1>
+                    <h1 className="profile__name">{currentUser.name}</h1>
                     <button
                         type="button"
                         className="profile__edit-profile-button page__hover page__hover_shade_dark"
                         aria-label
-                        onClick={props.onEditProfile}
+                        onClick={onEditProfile}
                     ></button>
-                    <p className="profile__vocation">{userDescription}</p>
+                    <p className="profile__vocation">{currentUser.about}</p>
                 </div>
                 <button
                     type="button"
                     className="profile__edit-gallery-button page__hover page__hover_shade_dark"
-                    onClick={props.onAddPlace}
+                    onClick={onAddPlace}
                 ></button>
             </section>
 
             <section className="gallery">
-                <ul className="gallery__list">{cards}</ul>
+                <ul className="gallery__list">
+                    {cards
+                        ? cards.map((item) => (
+                              <Card
+                                  key={item._id}
+                                  card={item}
+                                  onCardClick={onCardClick}
+                                  onCardLike={handleCardLike}
+                                  onCardDelete={handleCardDelete}
+                              />
+                          ))
+                        : null}
+                </ul>
+                res.
             </section>
         </main>
     );
