@@ -19,12 +19,19 @@ function EditAvatarPopup({isOpen, onClose, onUpdateAvatar}) {
         setAvatar("");
       } 
 
+      
+    function handleClosePopup() {
+        onClose();
+        setAvatar("");
+    }
+
+
     return (
         <PopupWithForm
             name="avatar"
             title="Обновить аватар"
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleClosePopup}
             buttonText="Обновить"
             onSubmit={handleSubmit}
         >

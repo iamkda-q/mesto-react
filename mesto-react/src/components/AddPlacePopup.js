@@ -14,6 +14,11 @@ function AddPlacePopup({isOpen, onClose, onAddPlace}) {
         setPhotoLink(evt.target.value);
     }
 
+    function clearInputs() {
+        setFigcaption("");
+        setPhotoLink("");
+    }
+
     function handleAddPlaceSubmit(evt) {
         evt.preventDefault();
 
@@ -21,16 +26,19 @@ function AddPlacePopup({isOpen, onClose, onAddPlace}) {
             link: photoLink,
             name: figcaption
         });
-        setFigcaption("");
-        setPhotoLink("");
+        clearInputs();
     }
 
+    function handleClosePopup() {
+        onClose();
+        clearInputs();
+    }
     return (
         <PopupWithForm
         name="add-photo"
         title="Новое место"
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClosePopup}
         onSubmit={handleAddPlaceSubmit}
         buttonText="Добавить"
     >
