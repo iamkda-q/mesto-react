@@ -26,9 +26,6 @@ class Api {
             body: JSON.stringify(body),
         }).then((res) => {
             if (res.ok) {
-                /*         if (method === "GET") {
-          return res.json()
-        } */
                 return res.json();
             }
             return Promise.reject(res);
@@ -61,18 +58,6 @@ class Api {
         }
         return this._fetch(`cards/${cardID}/likes`, "PUT");
     }
-
-    /*   setLike(cardID) {
-    return (
-      this._fetch(`cards/${cardID}/likes`, "PUT")
-    )
-  }
-
-  removeLike(cardID) {
-    return (
-      this._fetch(`cards/${cardID}/likes`, "DELETE")
-    )
-  } */
 
     updateAvatar(body) {
         return this._fetch(`users/me/avatar`, "PATCH", body);

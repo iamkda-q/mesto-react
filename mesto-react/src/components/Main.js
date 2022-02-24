@@ -4,43 +4,8 @@ import api from "../utils/api";
 import Card from "./Card";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onCardLike, onCardDelete}) {
     const currentUser = React.useContext(CurrentUserContext);
-    const [cards, setCards] = React.useState([]);
-
-    React.useEffect(() => {
-        api.getInitialCards()
-            .then((res) => {
-                setCards(res);
-            })
-            .catch((res) => {
-                console.log(
-                    `${api.errorHandler(res.status)} Номер ошибки - ${
-                        res.status ? res.status : "неизвестен"
-                    }. Всего хорошего!`
-                );
-            });
-    }, []);
-
-    function handleCardLike(card) {
-        const isLiked = card.likes.some((like) => like._id === currentUser._id);
-        api.changeLike(card._id, isLiked).then((newCard) => {
-            setCards(
-                cards.map((item) => {
-                    if (newCard._id === item._id) {
-                        return newCard;
-                    }
-                    return item;
-                })
-            );
-        });
-    }
-
-    function handleCardDelete(card) {
-        api.deleteCard(card._id).then(() => {
-            setCards(cards.filter(item => item._id !== card._id))
-        })
-    }
 
     return (
         <main className="main">
@@ -81,13 +46,12 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
                                   key={item._id}
                                   card={item}
                                   onCardClick={onCardClick}
-                                  onCardLike={handleCardLike}
-                                  onCardDelete={handleCardDelete}
+                                  onCardLike={onCardLike}
+                                  onCardDelete={onCardDelete}
                               />
                           ))
                         : null}
                 </ul>
-                res.
             </section>
         </main>
     );
