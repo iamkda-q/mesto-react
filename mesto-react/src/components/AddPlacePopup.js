@@ -5,6 +5,7 @@ function AddPlacePopup({isOpen, onClose, onAddPlace}) {
 
     const [figcaption, setFigcaption] = React.useState("");
     const [photoLink, setPhotoLink] = React.useState("");
+    
 
     function handleChangeFigcaption(evt) {
         setFigcaption(evt.target.value);
@@ -14,31 +15,25 @@ function AddPlacePopup({isOpen, onClose, onAddPlace}) {
         setPhotoLink(evt.target.value);
     }
 
-    function clearInputs() {
+    React.useEffect(() => {
         setFigcaption("");
         setPhotoLink("");
-    }
+    }, [isOpen]);
 
     function handleAddPlaceSubmit(evt) {
         evt.preventDefault();
-
         onAddPlace({
             link: photoLink,
             name: figcaption
         });
-        clearInputs();
     }
 
-    function handleClosePopup() {
-        onClose();
-        clearInputs();
-    }
     return (
         <PopupWithForm
         name="add-photo"
         title="Новое место"
         isOpen={isOpen}
-        onClose={handleClosePopup}
+        onClose={onClose}
         onSubmit={handleAddPlaceSubmit}
         buttonText="Добавить"
     >

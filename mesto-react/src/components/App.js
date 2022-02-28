@@ -37,42 +37,48 @@ function App() {
     }, []);
 
     function handleUpdateUser(userInfo) {
-        api.setUserInfo(userInfo).catch((res) => {
-            console.log(
-                `${api.errorHandler(res.status)} Номер ошибки - ${
-                    res.status ? res.status : "неизвестен"
-                }. Всего хорошего!`
-            );
-        });
-        setCurrentUser({ ...currentUser, ...userInfo });
-        closeAllPopups();
+        api.setUserInfo(userInfo)
+            .then(() => {
+                setCurrentUser({ ...currentUser, ...userInfo });
+                closeAllPopups();
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }
 
     function handleUpdateAvatar(avatar) {
-        api.updateAvatar(avatar).catch((res) => {
-            console.log(
-                `${api.errorHandler(res.status)} Номер ошибки - ${
-                    res.status ? res.status : "неизвестен"
-                }. Всего хорошего!`
-            );
-        });
-        setCurrentUser({ ...currentUser, ...avatar });
-        closeAllPopups();
+        api.updateAvatar(avatar)
+            .then(() => {
+                setCurrentUser({ ...currentUser, ...avatar });
+                closeAllPopups();
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }
 
     function handleAddPlace(card) {
         api.setNewCard(card)
-        .then((newCard) => {
-            setCards([newCard, ...cards]);
-        })
-        .catch((res) => {
-            console.log(
-                `${api.errorHandler(res.status)} Номер ошибки - ${
-                    res.status ? res.status : "неизвестен"
-                }. Всего хорошего!`
-            );
-        });
-        closeAllPopups();
+            .then((newCard) => {
+                setCards([newCard, ...cards]);
+                closeAllPopups();
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }
 
     React.useEffect(() => {
@@ -91,22 +97,38 @@ function App() {
 
     function handleCardLike(card) {
         const isLiked = card.likes.some((like) => like._id === currentUser._id);
-        api.changeLike(card._id, isLiked).then((newCard) => {
-            setCards(
-                cards.map((item) => {
-                    if (newCard._id === item._id) {
-                        return newCard;
-                    }
-                    return item;
-                })
-            );
-        });
+        api.changeLike(card._id, isLiked)
+            .then((newCard) => {
+                setCards(
+                    cards.map((item) => {
+                        if (newCard._id === item._id) {
+                            return newCard;
+                        }
+                        return item;
+                    })
+                );
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }
 
     function handleCardDelete(card) {
-        api.deleteCard(card._id).then(() => {
-            setCards(cards.filter((item) => item._id !== card._id));
-        });
+        api.deleteCard(card._id)
+            .then(() => {
+                setCards(cards.filter((item) => item._id !== card._id));
+            })
+            .catch((res) => {
+                console.log(
+                    `${api.errorHandler(res.status)} Номер ошибки - ${
+                        res.status ? res.status : "неизвестен"
+                    }. Всего хорошего!`
+                );
+            });
     }
 
     function handleEditProfileClick() {
